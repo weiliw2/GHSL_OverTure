@@ -156,7 +156,7 @@ def main():
     grid = calculate_precision_ratio(grid)
     
     # Step 9: Visualize precision ratio grid-by-grid
-    #visualize_grid(grid)
+    visualize_grid(grid)
 
 if __name__ == "__main__":
     main()

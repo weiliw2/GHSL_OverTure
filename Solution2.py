@@ -32,21 +32,19 @@ def get_ghsl_grid(ghsl_raster_path):
     print(f"Generated grid with {len(grid)} cells matching GHSL resolution.")
     return grid
 
-# Step 2: Calculate Zonal Statistics for GHSL Raster
 def calculate_zonal_statistics(grid, ghsl_raster_path):
     print("Performing zonal statistics for each grid cell...")
     ghsl_stats = zonal_stats(
         grid,
         ghsl_raster_path,
         stats=['sum'],
-        all_touched=True,
+        all_touched=False,  # Use stricter criteria for including pixels
         nodata=-9999
     )
     
-    # Add the GHSL built-up area to the grid GeoDataFrame
     grid['ghsl_sum'] = [stat['sum'] if stat['sum'] is not None else 0 for stat in ghsl_stats]
-    
     return grid
+
 
 # Step 3: Perform Spatial Comparison with Overture Maps
 def compare_with_overture(grid, overture_gdf):
@@ -85,8 +83,8 @@ def visualize_grid(grid):
 # Main function to run the analysis
 def main():
     # Paths to the data
-    ghsl_raster_path = '/Users/weilynnw/Desktop/RA_work/GHS_BUILT_S_E2030_GLOBE_R2023A_4326_30ss_V1_0_R6_C11/GHS_BUILT_S_E2030_GLOBE_R2023A_4326_30ss_V1_0_R6_C11.tif'  # Replace with the path to your GHSL raster data
-    overture_geojson_path = '/Users/weilynnw/Desktop/RA_work/durham_buildings.geojson'  # Replace with your Overture data
+    ghsl_raster_path = '/Users/weilynnw/Desktop/RA_work/GHS_BUILT_S_E2030_GLOBE_R2023A_4326_30ss_V1_0_R6_C11/GHS_BUILT_S_E2030_GLOBE_R2023A_4326_30ss_V1_0_R6_C11.tif'
+    overture_geojson_path = '/Users/weilynnw/Desktop/RA_work/durham_buildings.geojson'
     
     # Step 1: Generate the grid based on GHSL raster properties
     grid = get_ghsl_grid(ghsl_raster_path)
@@ -102,6 +100,7 @@ def main():
     
     # Step 5: Calculate precision ratio for each grid cell
     grid = calculate_precision_ratio(grid)
+    print("I'm here")
     
     # Step 6: Visualize the precision ratio grid-by-grid
     visualize_grid(grid)
